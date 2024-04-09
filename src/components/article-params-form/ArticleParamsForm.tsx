@@ -27,7 +27,7 @@ export const ArticleParamsForm = ({ state, onChange }: TArticleParamsForm) => {
 	const [settingsArticleState, setSettingsArticleSet] = useState({ ...state });
 	const [isOpen, setIsOpen] = useState(false);
 
-	const handleSubmit = (event: FormEvent) => {
+	const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		onChange(settingsArticleState);
 	};
