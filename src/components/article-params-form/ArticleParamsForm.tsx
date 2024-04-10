@@ -2,7 +2,7 @@ import { ArrowButton } from 'components/arrow-button';
 import { Button } from 'components/button';
 
 import styles from './ArticleParamsForm.module.scss';
-import React, { FormEvent, useState } from 'react';
+import React, { FormEvent, useRef, useState } from 'react';
 import {
 	ArticleStateType,
 	backgroundColors,
@@ -17,6 +17,7 @@ import clsx from 'clsx';
 import { RadioGroup } from 'components/radio-group';
 import { Text } from 'components/text';
 import { Separator } from 'components/separator';
+import { useOutsideClickClose } from '../select/hooks/useOutsideClickClose';
 
 type TArticleParamsForm = {
 	state: ArticleStateType;
@@ -26,6 +27,7 @@ type TArticleParamsForm = {
 export const ArticleParamsForm = ({ state, onChange }: TArticleParamsForm) => {
 	const [settingsArticleState, setSettingsArticleSet] = useState({ ...state });
 	const [isOpen, setIsOpen] = useState(false);
+	const rootRef = useRef<HTMLDivElement | null>(null);
 
 	const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
@@ -38,15 +40,25 @@ export const ArticleParamsForm = ({ state, onChange }: TArticleParamsForm) => {
 	};
 
 	const handleOpenForm = () => {
-		setIsOpen(!isOpen);
+		setIsOpen((prevState) => !prevState);
 	};
+
+	useOutsideClickClose({
+		isOpen: isOpen,
+		rootRef: rootRef,
+		onChange: setIsOpen,
+	});
 
 	return (
 		<>
 			<ArrowButton onClick={handleOpenForm} isOpen={isOpen} />
 			<aside
-				className={clsx(styles.container, isOpen && styles.container_open)}>
-				<form className={styles.form} onSubmit={handleSubmit}>
+				className={clsx(styles.container, isOpen && styles.container_open)}
+				ref={rootRef}>
+				<form
+					className={styles.form}
+					onSubmit={handleSubmit}
+					onClick={(e) => e.stopPropagation()}>
 					<Text size={31} uppercase={true} weight={800}>
 						Задайте параметры
 					</Text>
